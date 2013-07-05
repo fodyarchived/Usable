@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{192D554C-8FC1-4BBA-8A3F-E4C17349E855}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>$(SolutionDir)NuGetBuild</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>$(SolutionDir)NuGetBuild</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="install.ps1" />
+    <Content Include="uninstall.ps1" />
+    <NuSpec Include="Usable.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Fody_ToBeDeleted.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fody\Fody.csproj">
+      <Project>{a9529331-4a1b-4ff4-b8c4-9603ae3c262d}</Project>
+      <Name>Fody</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(SolutionDir)\tools\NuGetBuild.targets" />
+</Project>

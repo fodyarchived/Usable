@@ -1,6 +1,7 @@
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
 [Bb]in/
 [Oo]bj/
+NuGetBuild/
 
 # mstest test results
 TestResults
@@ -23,7 +24,6 @@ x64/
 *.meta
 *.obj
 *.pch
-*.pdb
 *.pgc
 *.pgd
 *.rsp

@@ -57,6 +57,25 @@
     </Compile>
     <Compile Include="CecilExtensions.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="FlowAnalysis\CSharpOutputVisitor.cs" />
+    <Compile Include="FlowAnalysis\ControlFlowEdge.cs" />
+    <Compile Include="FlowAnalysis\ControlFlowGraph.cs" />
+    <Compile Include="FlowAnalysis\ControlFlowGraphBuilder.cs" />
+    <Compile Include="FlowAnalysis\ControlFlowNode.cs" />
+    <Compile Include="FlowAnalysis\ControlStructureDetector.cs" />
+    <Compile Include="FlowAnalysis\DisassemblerHelpers.cs" />
+    <Compile Include="FlowAnalysis\ITextOutput.cs" />
+    <Compile Include="FlowAnalysis\OpCodeInfo.cs" />
+    <Compile Include="FlowAnalysis\PlainTextOutput.cs" />
+    <Compile Include="FlowAnalysis\SimplifyByRefCalls.cs" />
+    <Compile Include="FlowAnalysis\SsaBlock.cs" />
+    <Compile Include="FlowAnalysis\SsaForm.cs" />
+    <Compile Include="FlowAnalysis\SsaFormBuilder.cs" />
+    <Compile Include="FlowAnalysis\SsaInstruction.cs" />
+    <Compile Include="FlowAnalysis\SsaOptimization.cs" />
+    <Compile Include="FlowAnalysis\SsaVariable.cs" />
+    <Compile Include="FlowAnalysis\TextLocation.cs" />
+    <Compile Include="FlowAnalysis\TransformToSsa.cs" />
     <Compile Include="ModuleWeaver.cs" />
   </ItemGroup>
   <ItemGroup>

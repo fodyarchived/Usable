@@ -2,7 +2,7 @@
        extends [mscorlib]System.Object
 {
   .method public hidebysig instance void 
-          TextWriter() cil managed
+          SingleDisposable() cil managed
   {
     // Code size       37 (0x25)
     .maxstack  2
@@ -32,5 +32,5 @@
       IL_0023:  endfinally
     }  // end handler
     IL_0024:  ret
-  } // end of method SimpleCases::TextWriter
+  } // end of method SimpleCases::SingleDisposable
 } // end of class SimpleCases

@@ -1,0 +1,61 @@
+﻿.class public auto ansi beforefieldinit SimpleCases
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig instance void 
+          AlreadyUsing() cil managed
+  {
+    // Code size       58 (0x3a)
+    .maxstack  2
+    .locals init ([0] class [mscorlib]System.IO.StreamWriter w,
+             [1] bool CS$4$0000)
+    .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
+    .line 12,12 : 5,6 'AssemblyToProcess\\SimpleCases.cs'
+    IL_0000:  nop
+    .line 13,13 : 16,50 ''
+    IL_0001:  ldstr      "log.txt"
+    IL_0006:  call       class [mscorlib]System.IO.StreamWriter [mscorlib]System.IO.File::CreateText(string)
+    IL_000b:  stloc.0
+    .line 14,14 : 9,10 ''
+    .try
+    {
+      .try
+      {
+        IL_000c:  nop
+        .line 15,15 : 13,57 ''
+        IL_000d:  ldloc.0
+        IL_000e:  ldstr      "I'm a lumberjack an' I'm ok."
+        IL_0013:  callvirt   instance void [mscorlib]System.IO.TextWriter::WriteLine(string)
+        IL_0018:  nop
+        .line 16,16 : 9,10 ''
+        IL_0019:  nop
+        .line 16707566,16707566 : 0,0 ''
+        IL_001a:  leave.s    IL_002c
+      }  // end .try
+      finally
+      {
+        IL_001c:  ldloc.0
+        IL_001d:  ldnull
+        IL_001e:  ceq
+        IL_0020:  stloc.1
+        IL_0021:  ldloc.1
+        IL_0022:  brtrue.s   IL_002b
+        IL_0024:  ldloc.0
+        IL_0025:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+        IL_002a:  nop
+        IL_002b:  endfinally
+        .line 16707566,16707566 : 0,0 ''
+      }  // end handler
+      IL_002c:  nop
+      IL_002d:  leave.s    IL_0039
+    }  // end .try
+    finally
+    {
+      IL_002f:  ldloc.0
+      IL_0030:  brfalse.s  IL_0038
+      IL_0032:  ldloc.0
+      IL_0033:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0038:  endfinally
+    }  // end handler
+    IL_0039:  ret
+  } // end of method SimpleCases::AlreadyUsing
+} // end of class SimpleCases

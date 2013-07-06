@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+  
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <IlmergeAssemblies Include="@(ReferencePath)" Condition="'%(CopyLocal)'=='true' and '%(ReferencePath.IlMerge)'=='true'" />
+      <IlmergeAssemblies Include="@(Reference)" Condition="'%(Reference.Private)'=='true' and '%(Reference.IlMerge)'=='true'" />
+    </ItemGroup>
+
+    <Message Text="MERGING: @(IlmergeAssemblies->'%(Filename)')" Importance="High" /> 
+
+    <Exec Command="&quot;$(SolutionDir)Tools\ilmerge.exe&quot; /out:@(MainAssembly) /lib:$(OutputPath) &quot;@(IntermediateAssembly)&quot; @(IlmergeAssemblies->'&quot;%(FullPath)&quot;', ' ') /target:library /targetplatform:v4" /> 
+
+  </Target> 
+  
+  <Target Name="AfterResolveReferences">
+    <Message Text="Filtering out ilmerge assemblies from ReferenceCopyLocalPaths" Importance="High" />
+    <ItemGroup>
+        <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.IlMerge)'=='true'" />
+    </ItemGroup>
+  </Target>
+
+</Project>

@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using ICSharpCode.Decompiler.ILAst;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Collections.Generic;
 
 public static class CecilExtensions
 {
@@ -31,5 +34,36 @@ public static class CecilExtensions
     {
         foreach (var instruction in instructions.Reverse())
             processor.InsertAfter(target, instruction);
+    }
+
+    public static IEnumerable<Instruction> WithinRange(this Collection<Instruction> instructions, ILRange range)
+    {
+        return instructions.Where(i => i.Offset >= range.From && i.Offset <= range.To);
+    }
+
+    public static Instruction AtOffset(this Collection<Instruction> instructions, int offset)
+    {
+        return instructions.First(i => i.Offset == offset);
+    }
+
+    public static int FirstILOffset(this ILExpression expression)
+    {
+        if (expression.Arguments.Any())
+            return FirstILOffset(expression.Arguments[0]);
+
+        return expression.ILRanges.First().From;
+    }
+
+    public static int LastILOffset(this ILExpression expression)
+    {
+        return expression.ILRanges.Last().To;
+    }
+
+    public static void ReplaceCollection<T>(this Collection<T> collection, IEnumerable<T> source)
+    {
+        var items = source.ToList();
+        collection.Clear();
+        foreach (var item in items)
+            collection.Add(item);
     }
 }

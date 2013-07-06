@@ -6,18 +6,17 @@ using Mono.Cecil;
 
 public class UsableVisitor : ILNodeVisitor
 {
-    private readonly MethodDefinition method;
-
-    private Dictionary<ILVariable, int> starts;
+    private readonly Dictionary<ILVariable, int> starts;
+    private readonly List<int> currentTrys;
 
     public UsableVisitor(MethodDefinition method)
     {
-        this.method = method;
         UsingRanges = new List<ILRange>();
         starts = new Dictionary<ILVariable, int>();
+        currentTrys = method.Body.ExceptionHandlers.Select(handler => handler.TryStart.Offset).ToList();
     }
 
-    public List<ILRange> UsingRanges { get; set; }
+    public List<ILRange> UsingRanges { get; private set; }
 
     protected override ILExpression VisitExpression(ILExpression expression)
     {
@@ -31,7 +30,8 @@ public class UsableVisitor : ILNodeVisitor
                 starts.Remove(variable);
             }
 
-            starts.Add(variable, expression.LastILOffset());
+            if (!currentTrys.Contains(expression.LastILOffset()))
+                starts.Add(variable, expression.LastILOffset());
         }
 
         return base.VisitExpression(expression);

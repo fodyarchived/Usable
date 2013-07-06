@@ -68,6 +68,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CecilExtensions.cs" />
+    <Compile Include="ExceptionHandlerComparer.cs" />
     <Compile Include="ILNodeVisitor.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

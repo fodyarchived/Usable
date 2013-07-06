@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.Decompiler">
-      <HintPath>..\..\..\..\Decompiler\ICSharpCode.Decompiler.dll</HintPath>
+      <HintPath>ICSharpCode.Decompiler.dll</HintPath>
       <IlMerge>True</IlMerge>
     </Reference>
     <Reference Include="ICSharpCode.NRefactory">

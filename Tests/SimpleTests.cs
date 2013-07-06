@@ -6,6 +6,16 @@ using NUnit.Framework;
 [UseReporter(typeof(DiffReporter))]
 public class SimpleTests
 {
+    [SetUp]
+    public void SetApprovalConfig()
+    {
+#if DEBUG
+        ApprovalTests.Namers.NamerFactory.AsMachineSpecificTest(() => "Debug");
+#else
+        ApprovalTests.Namers.NamerFactory.AsMachineSpecificTest(() => "Release");
+#endif
+    }
+
     [Test]
     public void SingleDisposable()
     {

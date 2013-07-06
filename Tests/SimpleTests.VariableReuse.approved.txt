@@ -4,7 +4,7 @@
   .method public hidebysig instance void 
           VariableReuse() cil managed
   {
-    // Code size       50 (0x32)
+    // Code size       74 (0x4a)
     .maxstack  2
     .locals init ([0] class [mscorlib]System.IO.StreamWriter w)
     .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
@@ -15,19 +15,46 @@
     IL_0006:  call       class [mscorlib]System.IO.StreamWriter [mscorlib]System.IO.File::CreateText(string)
     IL_000b:  stloc.0
     .line 22,22 : 9,53 ''
-    IL_000c:  ldloc.0
-    IL_000d:  ldstr      "I'm a lumberjack an' I'm ok."
-    IL_0012:  callvirt   instance void [mscorlib]System.IO.TextWriter::WriteLine(string)
-    IL_0017:  nop
+    .try
+    {
+      IL_000c:  ldloc.0
+      IL_000d:  ldstr      "I'm a lumberjack an' I'm ok."
+      IL_0012:  callvirt   instance void [mscorlib]System.IO.TextWriter::WriteLine(string)
+      IL_0017:  nop
+      IL_0018:  leave.s    IL_0024
+    }  // end .try
+    finally
+    {
+      IL_001a:  ldloc.0
+      IL_001b:  brfalse.s  IL_0023
+      IL_001d:  ldloc.0
+      IL_001e:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0023:  endfinally
+    }  // end handler
+    IL_0024:  nop
     .line 23,23 : 9,41 ''
-    IL_0018:  ldstr      "log2.txt"
-    IL_001d:  call       class [mscorlib]System.IO.StreamWriter [mscorlib]System.IO.File::CreateText(string)
-    IL_0022:  stloc.0
+    IL_0025:  ldstr      "log2.txt"
+    IL_002a:  call       class [mscorlib]System.IO.StreamWriter [mscorlib]System.IO.File::CreateText(string)
+    IL_002f:  stloc.0
     .line 24,24 : 9,53 ''
-    IL_0023:  ldloc.0
-    IL_0024:  ldstr      "I'm a lumberjack an' I'm ok."
-    IL_0029:  callvirt   instance void [mscorlib]System.IO.TextWriter::WriteLine(string)
-    IL_002e:  nop
-    IL_002f:  ret
+    .try
+    {
+      IL_0030:  ldloc.0
+      IL_0031:  ldstr      "I'm a lumberjack an' I'm ok."
+      IL_0036:  callvirt   instance void [mscorlib]System.IO.TextWriter::WriteLine(string)
+      IL_003b:  leave.s    IL_0047
+    }  // end .try
+    finally
+    {
+      IL_003d:  ldloc.0
+      IL_003e:  brfalse.s  IL_0046
+      IL_0040:  ldloc.0
+      IL_0041:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0046:  endfinally
+    }  // end handler
+    IL_0047:  nop
+    IL_0048:  nop
+    .line 25,25 : 5,6 ''
+    IL_0049:  ret
   } // end of method SimpleCases::VariableReuse
 } // end of class SimpleCases

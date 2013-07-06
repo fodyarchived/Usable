@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using ICSharpCode.Decompiler;
+using ICSharpCode.Decompiler.ILAst;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -46,95 +49,107 @@ public class ModuleWeaver
 
     private void ProcessBody(MethodDefinition method)
     {
-        var methodBody = method.Body;
+        method.Body.SimplifyMacros();
 
-        var disposables = methodBody.Variables.Where(vdef => vdef.VariableType.Resolve().HasInterface("System.IDisposable"));
+        bool inlineVariables = false;
 
-        Instruction returnInstruction = null;
+        ILAstBuilder astBuilder = new ILAstBuilder();
+        ILBlock ilMethod = new ILBlock();
+        DecompilerContext context = new DecompilerContext(method.Module) { CurrentType = method.DeclaringType, CurrentMethod = method };
+        ilMethod.Body = astBuilder.Build(method, inlineVariables, context);
 
-        if (disposables.Any())
+        new ILAstOptimizer().Optimize(context, ilMethod, ILAstOptimizationStep.None);
+
+        var visitor = new UsableVisitor(method);
+        visitor.Visit(ilMethod);
+
+        var ilProcessor = method.Body.GetILProcessor();
+
+        var usingBlocks = FixUsingBlocks(ilProcessor,
+            visitor.UsingRanges.Select(r => Tuple.Create(method.Body.Instructions.AtOffset(r.From), method.Body.Instructions.AtOffset(r.To))));
+
+        foreach (var usingBlock in usingBlocks.OrderBy(u => u.Item1.Offset))
+            AddUsing(method.Body, usingBlock);
+
+        method.Body.OptimizeMacros();
+
+        method.Body.ExceptionHandlers.ReplaceCollection(method.Body.ExceptionHandlers.OrderBy(x => x, new ExceptionHandlerComparer()));
+    }
+
+    private IEnumerable<Tuple<Instruction, Instruction>> FixUsingBlocks(ILProcessor ilProcessor, IEnumerable<Tuple<Instruction, Instruction>> usingBlocks)
+    {
+        foreach (var groupedEndings in usingBlocks.GroupBy(u => u.Item2))
         {
-            methodBody.SimplifyMacros();
-            returnInstruction = FixReturns(method);
-        }
-
-        var il = methodBody.GetILProcessor();
-
-        foreach (var disposable in disposables)
-        {
-            var storeLoc = methodBody.Instructions.Where(i => i.OpCode == OpCodes.Stloc && i.Operand == disposable).OnlyOrDefault();
-            if (storeLoc == null)
-                continue;
-
-            var disposeCall = il.Create(OpCodes.Callvirt, ModuleDefinition.Import(typeof(IDisposable).GetMethod("Dispose")));
-
-            var firstPartOfFinally = il.Create(OpCodes.Ldloc, disposable);
-            var endFinally = il.Create(OpCodes.Endfinally);
-
-            il.InsertBefore(returnInstruction,
-                firstPartOfFinally,
-                il.Create(OpCodes.Brfalse, endFinally),
-                il.Create(OpCodes.Ldloc, disposable),
-                disposeCall,
-                endFinally
-            );
-
-            var handler = new ExceptionHandler(ExceptionHandlerType.Finally)
+            Instruction previous = null;
+            foreach (var usingBlock in groupedEndings.OrderBy(u => u.Item1.Offset))
             {
-                TryStart = storeLoc.Next,
-                TryEnd = firstPartOfFinally,
-                HandlerStart = firstPartOfFinally,
-                HandlerEnd = returnInstruction,
-            };
+                if (previous == null)
+                    previous = usingBlock.Item2;
+                var nop = ilProcessor.Create(OpCodes.Nop);
+                ilProcessor.InsertBefore(previous, nop);
+                previous = nop;
 
-            methodBody.ExceptionHandlers.Add(handler);
-        }
-
-        if (disposables.Any())
-        {
-            methodBody.InitLocals = true;
-            methodBody.OptimizeMacros();
+                yield return Tuple.Create(usingBlock.Item1, previous);
+            }
         }
     }
 
-    private Instruction FixReturns(MethodDefinition method)
+    private void AddUsing(MethodBody methodBody, Tuple<Instruction, Instruction> usingBlock)
     {
-        if (method.ReturnType == ModuleDefinition.TypeSystem.Void)
-        {
-            var instructions = method.Body.Instructions;
-            var lastRet = Instruction.Create(OpCodes.Ret);
-            instructions.Add(lastRet);
+        var stloc = usingBlock.Item1.Previous;
+        var variable = (VariableDefinition)stloc.Operand;
 
-            for (var index = 0; index < instructions.Count - 1; index++)
-            {
-                var instruction = instructions[index];
-                if (instruction.OpCode == OpCodes.Ret)
-                {
-                    instructions[index] = Instruction.Create(OpCodes.Leave, lastRet);
-                }
-            }
-            return lastRet;
+        if (!variable.VariableType.Resolve().HasInterface("System.IDisposable"))
+            return;
+
+        var il = methodBody.GetILProcessor();
+
+        var disposeCall = il.Create(OpCodes.Callvirt, ModuleDefinition.Import(typeof(IDisposable).GetMethod("Dispose")));
+
+        var leave = il.Create(OpCodes.Leave, usingBlock.Item2);
+        var firstPartOfFinally = il.Create(OpCodes.Ldloc, variable);
+        var endFinally = il.Create(OpCodes.Endfinally);
+
+        il.InsertBefore(usingBlock.Item2,
+            leave,
+            firstPartOfFinally,
+            il.Create(OpCodes.Brfalse, endFinally),
+            il.Create(OpCodes.Ldloc, variable),
+            disposeCall,
+            endFinally
+        );
+
+        var handler = new ExceptionHandler(ExceptionHandlerType.Finally)
+        {
+            TryStart = usingBlock.Item1,
+            TryEnd = firstPartOfFinally,
+            HandlerStart = firstPartOfFinally,
+            HandlerEnd = usingBlock.Item2,
+        };
+
+        methodBody.ExceptionHandlers.Add(handler);
+    }
+}
+
+public class ExceptionHandlerComparer : IComparer<ExceptionHandler>
+{
+    public int Compare(ExceptionHandler x, ExceptionHandler y)
+    {
+        var overlap = x.TryEnd.Offset > y.TryStart.Offset || y.TryEnd.Offset > x.TryStart.Offset;
+
+        if (x.TryStart.Offset == y.TryStart.Offset)
+        {
+            if (overlap)
+                return Comparer<int>.Default.Compare(x.TryEnd.Offset, y.TryEnd.Offset);
+            else
+                return Comparer<int>.Default.Compare(y.TryEnd.Offset, x.TryEnd.Offset);
         }
         else
         {
-            var instructions = method.Body.Instructions;
-            var returnVariable = new VariableDefinition(method.ReturnType);
-            method.Body.Variables.Add(returnVariable);
-            var lastLd = Instruction.Create(OpCodes.Ldloc, returnVariable);
-            instructions.Add(lastLd);
-            instructions.Add(Instruction.Create(OpCodes.Ret));
-
-            for (var index = 0; index < instructions.Count - 2; index++)
-            {
-                var instruction = instructions[index];
-                if (instruction.OpCode == OpCodes.Ret)
-                {
-                    instructions[index] = Instruction.Create(OpCodes.Leave, lastLd);
-                    instructions.Insert(index, Instruction.Create(OpCodes.Stloc, returnVariable));
-                    index++;
-                }
-            }
-            return lastLd;
+            if (overlap)
+                return Comparer<int>.Default.Compare(y.TryStart.Offset, x.TryStart.Offset);
+            else
+                return Comparer<int>.Default.Compare(x.TryStart.Offset, y.TryStart.Offset);
         }
     }
 }

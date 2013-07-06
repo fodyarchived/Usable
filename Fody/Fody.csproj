@@ -31,6 +31,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.Decompiler">
+      <HintPath>..\..\..\..\Decompiler\ICSharpCode.Decompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory">
+      <HintPath>..\packages\ICSharpCode.NRefactory.5.3.0\lib\Net40\ICSharpCode.NRefactory.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory.CSharp">
+      <HintPath>..\packages\ICSharpCode.NRefactory.5.3.0\lib\Net40\ICSharpCode.NRefactory.CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.NRefactory.Xml">
+      <HintPath>..\packages\ICSharpCode.NRefactory.5.3.0\lib\Net40\ICSharpCode.NRefactory.Xml.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.dll</HintPath>
     </Reference>
@@ -56,34 +68,28 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CecilExtensions.cs" />
+    <Compile Include="ILNodeVisitor.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ILNodeVisitor.tt</DependentUpon>
+    </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="FlowAnalysis\CSharpOutputVisitor.cs" />
-    <Compile Include="FlowAnalysis\ControlFlowEdge.cs" />
-    <Compile Include="FlowAnalysis\ControlFlowGraph.cs" />
-    <Compile Include="FlowAnalysis\ControlFlowGraphBuilder.cs" />
-    <Compile Include="FlowAnalysis\ControlFlowNode.cs" />
-    <Compile Include="FlowAnalysis\ControlStructureDetector.cs" />
-    <Compile Include="FlowAnalysis\DisassemblerHelpers.cs" />
-    <Compile Include="FlowAnalysis\ITextOutput.cs" />
-    <Compile Include="FlowAnalysis\OpCodeInfo.cs" />
-    <Compile Include="FlowAnalysis\PlainTextOutput.cs" />
-    <Compile Include="FlowAnalysis\SimplifyByRefCalls.cs" />
-    <Compile Include="FlowAnalysis\SsaBlock.cs" />
-    <Compile Include="FlowAnalysis\SsaForm.cs" />
-    <Compile Include="FlowAnalysis\SsaFormBuilder.cs" />
-    <Compile Include="FlowAnalysis\SsaInstruction.cs" />
-    <Compile Include="FlowAnalysis\SsaOptimization.cs" />
-    <Compile Include="FlowAnalysis\SsaVariable.cs" />
-    <Compile Include="FlowAnalysis\TextLocation.cs" />
-    <Compile Include="FlowAnalysis\TransformToSsa.cs" />
     <Compile Include="ModuleWeaver.cs" />
+    <Compile Include="UsableVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fody.targets" />
+    <None Include="ILNodeVisitor.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ILNodeVisitor.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)Tools\Pepita\PepitaGet.targets" />

@@ -10,6 +10,7 @@ using Mono.Cecil.Rocks;
 public class ModuleWeaver
 {
     public Action<string> LogInfo { get; set; }
+    public Action<string> LogWarning { get; set; }
     public Action<string> LogError { get; set; }
     public ModuleDefinition ModuleDefinition { get; set; }
     public IAssemblyResolver AssemblyResolver { get; set; }
@@ -18,12 +19,17 @@ public class ModuleWeaver
     public ModuleWeaver()
     {
         LogInfo = s => { };
+        LogWarning = s => { };
         LogError = s => { };
         DefineConstants = new string[0];
     }
 
     public void Execute()
     {
+        LoggerFactory.LogInfo = LogInfo;
+        LoggerFactory.LogWarn = LogWarning;
+        LoggerFactory.LogError = LogError;
+
         var types = ModuleDefinition.GetTypes()
             .ToList();
 
@@ -58,18 +64,31 @@ public class ModuleWeaver
         var visitor = new UsableVisitor(method);
         visitor.Visit(ilMethod);
 
+        // Convert early returns to branches to the last return
         if (visitor.EarlyReturns.Any() && method.Body.Instructions.Last().OpCode == OpCodes.Ret)
             FixEarlyReturns(method.Body, visitor.EarlyReturns);
 
+        // Inserts nops to ensure nested trys are not overlapping
         var usingBlocks = FixUsingBlocks(ilProcessor,
-            visitor.UsingRanges.Select(r => Tuple.Create(method.Body.Instructions.AtOffset(r.From), method.Body.Instructions.AtOffset(r.To))));
+            visitor.UsingRanges
+                .Select(r => Tuple.Create(method.Body.Instructions.AtOffset(r.From), method.Body.Instructions.AtOffset(r.To)))
+                .ToList());
 
+        // Add the usings
         foreach (var usingBlock in usingBlocks.OrderBy(u => u.Item1.Offset))
             AddUsing(method.Body, usingBlock);
 
         method.Body.OptimizeMacros();
+        method.Body.SimplifyMacros();
 
+        // Sort exception handlers so inner trys are before outer ones
         method.Body.ExceptionHandlers.ReplaceCollection(method.Body.ExceptionHandlers.OrderBy(x => x, new ExceptionHandlerComparer()));
+
+        // Any branches in a try branching to outside must be converted to leaves
+        foreach (var handler in method.Body.ExceptionHandlers)
+            ReplaceBranchesWithLeaves(ilProcessor, handler);
+
+        method.Body.OptimizeMacros();
     }
 
     private static ILBlock Decompile(MethodDefinition method)
@@ -108,7 +127,10 @@ public class ModuleWeaver
                 ilProcessor.InsertBefore(previous, nop);
                 previous = nop;
 
-                yield return Tuple.Create(usingBlock.Item1, previous);
+                if (usingBlock.Item1 == usingBlock.Item2)
+                    yield return Tuple.Create(previous, previous.Next);
+                else
+                    yield return Tuple.Create(usingBlock.Item1, previous);
             }
         }
     }
@@ -116,6 +138,8 @@ public class ModuleWeaver
     private void AddUsing(MethodBody methodBody, Tuple<Instruction, Instruction> usingBlock)
     {
         var stloc = usingBlock.Item1.Previous;
+        while (stloc.OpCode == OpCodes.Nop)
+            stloc = stloc.Previous;
         var variable = (VariableDefinition)stloc.Operand;
 
         if (!variable.VariableType.Resolve().HasInterface("System.IDisposable"))
@@ -158,8 +182,6 @@ public class ModuleWeaver
             HandlerEnd = usingBlock.Item2,
         };
 
-        ReplaceBranchesWithLeaves(il, handler);
-
         methodBody.ExceptionHandlers.Add(handler);
     }
 
@@ -169,7 +191,7 @@ public class ModuleWeaver
         while (current != handler.TryEnd)
         {
             var next = current.Next;
-            if (current.OpCode == OpCodes.Br)
+            if (current.OpCode == OpCodes.Br && ((Instruction)current.Operand).Offset > handler.TryEnd.Offset)
                 il.Replace(current, il.Create(OpCodes.Leave, (Instruction)current.Operand));
             current = next;
         }

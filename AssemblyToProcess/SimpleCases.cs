@@ -39,4 +39,9 @@ public class SimpleCases
         var w2 = File.CreateText("log2.txt");
         w2.WriteLine("He's a lumberjack an' He's ok.");
     }
+
+    public static void NothingAfterAssignment()
+    {
+        var w = File.CreateText("log.txt");
+    }
 }

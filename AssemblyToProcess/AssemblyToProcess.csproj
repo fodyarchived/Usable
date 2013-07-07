@@ -35,6 +35,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BrokenScenarios.cs" />
     <Compile Include="MultipleReturns.cs" />
     <Compile Include="SimpleCases.cs" />
   </ItemGroup>

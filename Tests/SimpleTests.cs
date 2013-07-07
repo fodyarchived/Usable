@@ -45,4 +45,10 @@ public class SimpleTests
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::MultipleUsings"));
     }
+
+    [Test]
+    public void NothingAfterAssignment()
+    {
+        Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::NothingAfterAssignment"));
+    }
 }

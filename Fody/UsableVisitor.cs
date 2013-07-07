@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Anotar.Custom;
 using ICSharpCode.Decompiler.ILAst;
 using Mono.Cecil;
 
 public class UsableVisitor : ILNodeVisitor
 {
+    private readonly MethodDefinition method;
     private readonly Dictionary<Tuple<ILVariable, int>, int> starts;
     private readonly List<int> currentTrys;
     private int currentScope;
 
     public UsableVisitor(MethodDefinition method)
     {
+        this.method = method;
         UsingRanges = new List<ILRange>();
         EarlyReturns = new List<int>();
         starts = new Dictionary<Tuple<ILVariable, int>, int>();
@@ -29,14 +32,21 @@ public class UsableVisitor : ILNodeVisitor
 
             var key = Tuple.Create(variable, currentScope);
 
-            if (starts.ContainsKey(key))
+            if (starts.Keys.Any(k => k.Item1 == variable && k.Item2 != currentScope))
             {
-                UsingRanges.Add(new ILRange { From = starts[key], To = expression.FirstILOffset() });
-                starts.Remove(key);
+                Log.Error("Method {0}: Reassigning a variable in a condition is not supported.", method);
             }
+            else
+            {
+                if (starts.ContainsKey(key))
+                {
+                    UsingRanges.Add(new ILRange { From = starts[key], To = expression.FirstILOffset() });
+                    starts.Remove(key);
+                }
 
-            if (!currentTrys.Contains(expression.LastILOffset()))
-                starts.Add(key, expression.LastILOffset());
+                if (!currentTrys.Contains(expression.LastILOffset()))
+                    starts.Add(key, expression.LastILOffset());
+            }
         }
         if (expression.Code == ILCode.Ret && currentScope > 1)
         {

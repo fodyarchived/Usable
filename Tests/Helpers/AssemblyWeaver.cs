@@ -39,8 +39,9 @@ public static class AssemblyWeaver
         {
             ModuleDefinition = moduleDefinition,
             AssemblyResolver = assemblyResolver,
-            LogError = LogError,
             LogInfo = LogInfo,
+            LogWarning = LogWarning,
+            LogError = LogError,
             DefineConstants = new[] { "DEBUG" } // Always testing the debug weaver
         };
 
@@ -53,16 +54,22 @@ public static class AssemblyWeaver
     public static string BeforeAssemblyPath;
     public static string AfterAssemblyPath;
 
-    private static void LogError(string error)
+    private static void LogInfo(string message)
     {
-        Errors.Add(error);
+        Infos.Add(message);
     }
 
-    private static void LogInfo(string error)
+    private static void LogWarning(string message)
     {
-        Infos.Add(error);
+        Warnings.Add(message);
     }
 
-    public static List<string> Errors = new List<string>();
+    private static void LogError(string message)
+    {
+        Errors.Add(message);
+    }
+
     public static List<string> Infos = new List<string>();
+    public static List<string> Warnings = new List<string>();
+    public static List<string> Errors = new List<string>();
 }

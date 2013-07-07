@@ -2,7 +2,7 @@
 
 ![Usable Icon - A waste paper basket.](https://raw.github.com/Fody/Usable/master/Icons/package_icon.png)
 
-Usable adds using statements for local variables that have been created, and implement IDisposable.
+Usable adds using statements for local variables that have been created, and implement [IDisposable](http://msdn.microsoft.com/en-au/library/system.idisposable.aspx).
 
 ### Nuget 
 

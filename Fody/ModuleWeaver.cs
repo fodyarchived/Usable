@@ -51,19 +51,15 @@ public class ModuleWeaver
     {
         method.Body.SimplifyMacros();
 
-        bool inlineVariables = false;
+        var ilProcessor = method.Body.GetILProcessor();
 
-        ILAstBuilder astBuilder = new ILAstBuilder();
-        ILBlock ilMethod = new ILBlock();
-        DecompilerContext context = new DecompilerContext(method.Module) { CurrentType = method.DeclaringType, CurrentMethod = method };
-        ilMethod.Body = astBuilder.Build(method, inlineVariables, context);
-
-        new ILAstOptimizer().Optimize(context, ilMethod, ILAstOptimizationStep.None);
+        var ilMethod = Decompile(method);
 
         var visitor = new UsableVisitor(method);
         visitor.Visit(ilMethod);
 
-        var ilProcessor = method.Body.GetILProcessor();
+        if (visitor.EarlyReturns.Any() && method.Body.Instructions.Last().OpCode == OpCodes.Ret)
+            FixEarlyReturns(method.Body, visitor.EarlyReturns);
 
         var usingBlocks = FixUsingBlocks(ilProcessor,
             visitor.UsingRanges.Select(r => Tuple.Create(method.Body.Instructions.AtOffset(r.From), method.Body.Instructions.AtOffset(r.To))));
@@ -74,6 +70,29 @@ public class ModuleWeaver
         method.Body.OptimizeMacros();
 
         method.Body.ExceptionHandlers.ReplaceCollection(method.Body.ExceptionHandlers.OrderBy(x => x, new ExceptionHandlerComparer()));
+    }
+
+    private static ILBlock Decompile(MethodDefinition method)
+    {
+        bool inlineVariables = false;
+
+        ILAstBuilder astBuilder = new ILAstBuilder();
+        ILBlock ilMethod = new ILBlock();
+        DecompilerContext context = new DecompilerContext(method.Module) { CurrentType = method.DeclaringType, CurrentMethod = method };
+        ilMethod.Body = astBuilder.Build(method, inlineVariables, context);
+
+        new ILAstOptimizer().Optimize(context, ilMethod, ILAstOptimizationStep.None);
+        return ilMethod;
+    }
+
+    private void FixEarlyReturns(MethodBody body, List<int> earlyReturns)
+    {
+        var il = body.GetILProcessor();
+        var lastReturn = body.Instructions.Last();
+        foreach (var instruction in earlyReturns.Select(offset => body.Instructions.AtOffset(offset)))
+        {
+            il.Replace(instruction, il.Create(OpCodes.Br, lastReturn));
+        }
     }
 
     private IEnumerable<Tuple<Instruction, Instruction>> FixUsingBlocks(ILProcessor ilProcessor, IEnumerable<Tuple<Instruction, Instruction>> usingBlocks)
@@ -106,12 +125,24 @@ public class ModuleWeaver
 
         var disposeCall = il.Create(OpCodes.Callvirt, ModuleDefinition.Import(typeof(IDisposable).GetMethod("Dispose")));
 
-        var leave = il.Create(OpCodes.Leave, usingBlock.Item2);
+        methodBody.OptimizeMacros();
+        methodBody.SimplifyMacros();
+
+        if (usingBlock.Item2.Previous.OpCode == OpCodes.Br)
+        {
+            var leave = il.Create(OpCodes.Leave, (Instruction)usingBlock.Item2.Previous.Operand);
+            il.Replace(usingBlock.Item2.Previous, leave);
+        }
+        else
+        {
+            var leave = il.Create(OpCodes.Leave, usingBlock.Item2);
+            il.InsertBefore(usingBlock.Item2, leave);
+        }
+
         var firstPartOfFinally = il.Create(OpCodes.Ldloc, variable);
         var endFinally = il.Create(OpCodes.Endfinally);
 
         il.InsertBefore(usingBlock.Item2,
-            leave,
             firstPartOfFinally,
             il.Create(OpCodes.Brfalse, endFinally),
             il.Create(OpCodes.Ldloc, variable),
@@ -127,6 +158,20 @@ public class ModuleWeaver
             HandlerEnd = usingBlock.Item2,
         };
 
+        ReplaceBranchesWithLeaves(il, handler);
+
         methodBody.ExceptionHandlers.Add(handler);
+    }
+
+    private void ReplaceBranchesWithLeaves(ILProcessor il, ExceptionHandler handler)
+    {
+        var current = handler.TryStart;
+        while (current != handler.TryEnd)
+        {
+            var next = current.Next;
+            if (current.OpCode == OpCodes.Br)
+                il.Replace(current, il.Create(OpCodes.Leave, (Instruction)current.Operand));
+            current = next;
+        }
     }
 }

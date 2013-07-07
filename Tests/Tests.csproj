@@ -35,6 +35,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MultipleReturns.cs" />
     <Compile Include="SimpleTests.cs" />
     <Compile Include="Helpers\Decompiler.cs" />
     <Compile Include="VerifyTest.cs" />

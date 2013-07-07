@@ -1,0 +1,79 @@
+﻿.class public auto ansi beforefieldinit MultipleReturns
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig instance void 
+          Conditional(bool x) cil managed
+  {
+    // Code size       88 (0x58)
+    .maxstack  2
+    .locals init ([0] class [mscorlib]System.IO.StreamWriter w,
+             [1] bool CS$4$0000)
+    .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
+    .line 7,7 : 5,6 'AssemblyToProcess\\MultipleReturns.cs'
+    IL_0000:  nop
+    .line 8,8 : 9,15 ''
+    IL_0001:  ldarg.1
+    IL_0002:  ldc.i4.0
+    IL_0003:  ceq
+    IL_0005:  stloc.1
+    .line 16707566,16707566 : 0,0 ''
+    IL_0006:  ldloc.1
+    IL_0007:  brtrue.s   IL_0031
+    .line 9,9 : 9,10 ''
+    IL_0009:  nop
+    .line 10,10 : 13,48 ''
+    IL_000a:  ldstr      "log.txt"
+    IL_000f:  call       class [mscorlib]System.IO.StreamWriter [mscorlib]System.IO.File::CreateText(string)
+    IL_0014:  stloc.0
+    .line 11,11 : 13,57 ''
+    .try
+    {
+      IL_0015:  ldloc.0
+      IL_0016:  ldstr      "I'm a lumberjack an' I'm ok."
+      IL_001b:  callvirt   instance void [mscorlib]System.IO.TextWriter::WriteLine(string)
+      IL_0020:  leave.s    IL_002c
+    }  // end .try
+    finally
+    {
+      IL_0022:  ldloc.0
+      IL_0023:  brfalse.s  IL_002b
+      IL_0025:  ldloc.0
+      IL_0026:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_002b:  endfinally
+    }  // end handler
+    IL_002c:  nop
+    IL_002d:  nop
+    .line 12,12 : 9,10 ''
+    IL_002e:  nop
+    .line 16707566,16707566 : 0,0 ''
+    IL_002f:  br.s       IL_0057
+    .line 14,14 : 9,10 ''
+    IL_0031:  nop
+    .line 15,15 : 13,49 ''
+    IL_0032:  ldstr      "log2.txt"
+    IL_0037:  call       class [mscorlib]System.IO.StreamWriter [mscorlib]System.IO.File::CreateText(string)
+    IL_003c:  stloc.0
+    .line 16,16 : 13,59 ''
+    .try
+    {
+      IL_003d:  ldloc.0
+      IL_003e:  ldstr      "He's a lumberjack an' He's ok."
+      IL_0043:  callvirt   instance void [mscorlib]System.IO.TextWriter::WriteLine(string)
+      IL_0048:  leave.s    IL_0054
+    }  // end .try
+    finally
+    {
+      IL_004a:  ldloc.0
+      IL_004b:  brfalse.s  IL_0053
+      IL_004d:  ldloc.0
+      IL_004e:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0053:  endfinally
+    }  // end handler
+    IL_0054:  nop
+    IL_0055:  nop
+    .line 17,17 : 9,10 ''
+    IL_0056:  nop
+    .line 18,18 : 5,6 ''
+    IL_0057:  ret
+  } // end of method MultipleReturns::Conditional
+} // end of class MultipleReturns

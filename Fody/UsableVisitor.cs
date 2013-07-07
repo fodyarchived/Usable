@@ -6,32 +6,41 @@ using Mono.Cecil;
 
 public class UsableVisitor : ILNodeVisitor
 {
-    private readonly Dictionary<ILVariable, int> starts;
+    private readonly Dictionary<Tuple<ILVariable, int>, int> starts;
     private readonly List<int> currentTrys;
+    private int currentScope;
 
     public UsableVisitor(MethodDefinition method)
     {
         UsingRanges = new List<ILRange>();
-        starts = new Dictionary<ILVariable, int>();
+        EarlyReturns = new List<int>();
+        starts = new Dictionary<Tuple<ILVariable, int>, int>();
         currentTrys = method.Body.ExceptionHandlers.Select(handler => handler.TryStart.Offset).ToList();
     }
 
     public List<ILRange> UsingRanges { get; private set; }
+    public List<int> EarlyReturns { get; private set; }
 
     protected override ILExpression VisitExpression(ILExpression expression)
     {
-        if (expression.Match(ILCode.Stloc))
+        if (expression.Code == ILCode.Stloc)
         {
             var variable = (ILVariable)expression.Operand;
 
-            if (starts.ContainsKey(variable))
+            var key = Tuple.Create(variable, currentScope);
+
+            if (starts.ContainsKey(key))
             {
-                UsingRanges.Add(new ILRange { From = starts[variable], To = expression.FirstILOffset() });
-                starts.Remove(variable);
+                UsingRanges.Add(new ILRange { From = starts[key], To = expression.FirstILOffset() });
+                starts.Remove(key);
             }
 
             if (!currentTrys.Contains(expression.LastILOffset()))
-                starts.Add(variable, expression.LastILOffset());
+                starts.Add(key, expression.LastILOffset());
+        }
+        if (expression.Code == ILCode.Ret && currentScope > 1)
+        {
+            EarlyReturns.Add(expression.ILRanges.First().From);
         }
 
         return base.VisitExpression(expression);
@@ -39,14 +48,22 @@ public class UsableVisitor : ILNodeVisitor
 
     protected override ILBlock VisitBlock(ILBlock block)
     {
+        currentScope++;
+
         var result = base.VisitBlock(block);
 
-        foreach (var start in starts.Values)
-        {
-            UsingRanges.Add(new ILRange { From = start, To = block.Body.OfType<ILExpression>().Last().LastILOffset() });
-        }
+        currentScope--;
 
-        starts.Clear();
+        if (block.Body.Count == 0)
+            return result;
+
+        var toOffset = block.Body.Last().LastILOffset();
+
+        foreach (var start in starts.Where(kvp => kvp.Key.Item2 == currentScope + 1).ToList())
+        {
+            UsingRanges.Add(new ILRange { From = start.Value, To = toOffset });
+            starts.Remove(start.Key);
+        }
 
         return result;
     }

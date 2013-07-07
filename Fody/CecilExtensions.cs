@@ -46,11 +46,6 @@ public static class CecilExtensions
         return instructions.First(i => i.Offset == offset);
     }
 
-    public static Instruction BeforeOffset(this Collection<Instruction> instructions, int offset)
-    {
-        return instructions.Last(i => i.Offset < offset);
-    }
-
     public static int FirstILOffset(this ILNode node)
     {
         if (node.GetChildren().Any())

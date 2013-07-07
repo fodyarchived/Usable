@@ -46,9 +46,19 @@ public class SimpleTests
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::MultipleUsings"));
     }
 
+#if DEBUG
+
     [Test]
     public void NothingAfterAssignment()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::NothingAfterAssignment"));
     }
+
+    [Test]
+    public void ThrowInsteadOfReturn()
+    {
+        Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::ThrowInsteadOfReturn"));
+    }
+
+#endif
 }

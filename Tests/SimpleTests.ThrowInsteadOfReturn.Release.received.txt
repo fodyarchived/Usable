@@ -1,0 +1,18 @@
+﻿.class public auto ansi beforefieldinit SimpleCases
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig static void  ThrowInsteadOfReturn() cil managed
+  {
+    // Code size       18 (0x12)
+    .maxstack  8
+    .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
+    .line 50,50 : 9,44 'AssemblyToProcess\\SimpleCases.cs'
+    IL_0000:  ldstr      "log.txt"
+    IL_0005:  call       class [mscorlib]System.IO.StreamWriter [mscorlib]System.IO.File::CreateText(string)
+    IL_000a:  pop
+    .line 51,51 : 9,52 ''
+    IL_000b:  newobj     instance void [mscorlib]System.NotImplementedException::.ctor()
+    IL_0010:  throw
+    IL_0011:  ret
+  } // end of method SimpleCases::ThrowInsteadOfReturn
+} // end of class SimpleCases

@@ -11,10 +11,4 @@ public class BrokenScenarios
             w = File.CreateText("log2.txt");
         w.WriteLine("I'm a lumberjack an' I'm ok.");
     }
-
-    //public static void ThrowInsteadOfReturn()
-    //{
-    //    var w = File.CreateText("log.txt");
-    //    throw new System.NotImplementedException();
-    //}
 }

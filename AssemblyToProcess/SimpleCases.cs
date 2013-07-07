@@ -44,4 +44,10 @@ public class SimpleCases
     {
         var w = File.CreateText("log.txt");
     }
+
+    public static void ThrowInsteadOfReturn()
+    {
+        var w = File.CreateText("log.txt");
+        throw new System.NotImplementedException();
+    }
 }

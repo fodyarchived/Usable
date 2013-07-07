@@ -59,10 +59,22 @@ public class ModuleWeaver
 
         var ilProcessor = method.Body.GetILProcessor();
 
+        if (method.Body.Instructions.Last().OpCode == OpCodes.Throw)
+            ilProcessor.Append(ilProcessor.Create(OpCodes.Ret));
+
+        method.Body.OptimizeMacros();
+        method.Body.SimplifyMacros();
+
         var ilMethod = Decompile(method);
 
         var visitor = new UsableVisitor(method);
         visitor.Visit(ilMethod);
+
+        if (!visitor.UsingRanges.Any())
+        {
+            method.Body.OptimizeMacros();
+            return;
+        }
 
         // Convert early returns to branches to the last return
         if (visitor.EarlyReturns.Any() && method.Body.Instructions.Last().OpCode == OpCodes.Ret)

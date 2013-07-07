@@ -1,0 +1,16 @@
+﻿.class public auto ansi beforefieldinit SimpleCases
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig static void  NothingAfterAssignment() cil managed
+  {
+    // Code size       12 (0xc)
+    .maxstack  8
+    .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
+    .line 45,45 : 9,44 'AssemblyToProcess\\SimpleCases.cs'
+    IL_0000:  ldstr      "log.txt"
+    IL_0005:  call       class [mscorlib]System.IO.StreamWriter [mscorlib]System.IO.File::CreateText(string)
+    IL_000a:  pop
+    .line 46,46 : 5,6 ''
+    IL_000b:  ret
+  } // end of method SimpleCases::NothingAfterAssignment
+} // end of class SimpleCases

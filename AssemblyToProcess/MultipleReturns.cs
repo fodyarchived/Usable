@@ -26,15 +26,4 @@ public class MultipleReturns
 
         w.WriteLine("I'm a lumberjack an' I'm ok.");
     }
-
-    public void EarlyReturnExample()
-    {
-        using (var w = File.CreateText("log.txt"))
-        {
-            if (w == null)
-                return;
-
-            w.WriteLine("I'm a lumberjack an' I'm ok.");
-        }
-    }
 }

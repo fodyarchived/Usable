@@ -12,8 +12,6 @@ To Install from the Nuget Package Manager Console
     
     PM> Install-Package Usable.Fody
 
-**Currently not on NuGet.**
-
 ### Your Code
 
     public void Method()

@@ -46,30 +46,23 @@ public static class CecilExtensions
         return instructions.First(i => i.Offset == offset);
     }
 
+    public static Instruction BeforeOffset(this Collection<Instruction> instructions, int offset)
+    {
+        return instructions.Last(i => i.Offset < offset);
+    }
+
     public static int FirstILOffset(this ILNode node)
     {
-        if (node.GetChildren().Any())
-            return FirstILOffset(node.GetChildren().First());
-
-        var expression = node as ILExpression;
-        if (expression != null)
-            return expression.ILRanges.First().From;
-
-        throw new NotSupportedException();
+        return node.GetSelfAndChildrenRecursive<ILExpression>()
+            .SelectMany(exp => exp.ILRanges)
+            .Min(ilr => ilr.From);
     }
 
     public static int LastILOffset(this ILNode node)
     {
-        var expression = node as ILExpression;
-        if (expression != null)
-            return expression.ILRanges.Last().To;
-
-        if (node.GetChildren().Any())
-            return LastILOffset(node.GetChildren()
-                .Where(n => !(n is ILBlock) || ((ILBlock)n).Body.Count > 0)
-                .Last());
-
-        throw new NotSupportedException();
+        return node.GetSelfAndChildrenRecursive<ILExpression>()
+            .SelectMany(exp => exp.ILRanges)
+            .Max(ilr => ilr.To);
     }
 
     public static void ReplaceCollection<T>(this Collection<T> collection, IEnumerable<T> source)

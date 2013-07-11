@@ -1,1 +1,1 @@
-﻿Warning is empty
+﻿Warning[0] = Method System.Void BrokenScenarios::ReassignmentInsideConditional(System.Boolean): Using cannot be added because reassigning a variable in a condition is not supported.

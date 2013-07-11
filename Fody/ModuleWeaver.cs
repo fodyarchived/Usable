@@ -83,7 +83,7 @@ public class ModuleWeaver
         // Inserts nops to ensure nested trys are not overlapping
         var usingBlocks = FixUsingBlocks(ilProcessor,
             visitor.UsingRanges
-                .Select(r => Tuple.Create(method.Body.Instructions.AtOffset(r.From), method.Body.Instructions.AtOffset(r.To)))
+                .Select(r => Tuple.Create(method.Body.Instructions.AtOffset(r.From), method.Body.Instructions.BeforeOffset(r.To)))
                 .ToList());
 
         // Add the usings
@@ -126,25 +126,33 @@ public class ModuleWeaver
         }
     }
 
-    private IEnumerable<Tuple<Instruction, Instruction>> FixUsingBlocks(ILProcessor ilProcessor, IEnumerable<Tuple<Instruction, Instruction>> usingBlocks)
+    private List<Tuple<Instruction, Instruction>> FixUsingBlocks(ILProcessor ilProcessor, List<Tuple<Instruction, Instruction>> usingBlocks)
     {
+        // Changes using block from [Inclusive, Exclusive) to [Inclusive, Inclusive]
+        // Also adds a nop after the block as the target to jump to.
+
+        List<Tuple<Instruction, Instruction>> fixedUsingBlocks = new List<Tuple<Instruction, Instruction>>(usingBlocks.Count);
+
         foreach (var groupedEndings in usingBlocks.GroupBy(u => u.Item2))
         {
-            Instruction previous = null;
+            var nop = ilProcessor.Create(OpCodes.Nop);
+            ilProcessor.InsertAfter(groupedEndings.Key, nop);
+
             foreach (var usingBlock in groupedEndings.OrderBy(u => u.Item1.Offset))
             {
-                if (previous == null)
-                    previous = usingBlock.Item2;
-                var nop = ilProcessor.Create(OpCodes.Nop);
-                ilProcessor.InsertBefore(previous, nop);
-                previous = nop;
-
-                if (usingBlock.Item1 == usingBlock.Item2)
-                    yield return Tuple.Create(previous, previous.Next);
+                if (usingBlock.Item2.Next.Next == usingBlock.Item1)
+                {
+                    // Empty using - item 2 is before item 1
+                    fixedUsingBlocks.Add(Tuple.Create(nop, nop));
+                }
                 else
-                    yield return Tuple.Create(usingBlock.Item1, previous);
+                {
+                    fixedUsingBlocks.Add(Tuple.Create(usingBlock.Item1, usingBlock.Item2));
+                }
             }
         }
+
+        return fixedUsingBlocks;
     }
 
     private void AddUsing(MethodBody methodBody, Tuple<Instruction, Instruction> usingBlock)
@@ -164,21 +172,33 @@ public class ModuleWeaver
         methodBody.OptimizeMacros();
         methodBody.SimplifyMacros();
 
-        if (usingBlock.Item2.Previous.OpCode == OpCodes.Br)
+        var tryStart = usingBlock.Item1;
+        var handlerEnd = usingBlock.Item2.Next;
+        Instruction leave;
+
+        if (usingBlock.Item1 == usingBlock.Item2)
         {
-            var leave = il.Create(OpCodes.Leave, (Instruction)usingBlock.Item2.Previous.Operand);
-            il.Replace(usingBlock.Item2.Previous, leave);
+            // Empty using
+            leave = il.Create(OpCodes.Leave, usingBlock.Item1);
+            il.InsertBefore(usingBlock.Item2, leave);
+            tryStart = leave;
+            handlerEnd = leave.Next;
+        }
+        else if (usingBlock.Item2.OpCode == OpCodes.Br)
+        {
+            leave = il.Create(OpCodes.Leave, (Instruction)usingBlock.Item2.Operand);
+            il.Replace(usingBlock.Item2, leave);
         }
         else
         {
-            var leave = il.Create(OpCodes.Leave, usingBlock.Item2);
-            il.InsertBefore(usingBlock.Item2, leave);
+            leave = il.Create(OpCodes.Leave, usingBlock.Item2.Next);
+            il.InsertAfter(usingBlock.Item2, leave);
         }
 
         var firstPartOfFinally = il.Create(OpCodes.Ldloc, variable);
         var endFinally = il.Create(OpCodes.Endfinally);
 
-        il.InsertBefore(usingBlock.Item2,
+        il.InsertAfter(leave,
             firstPartOfFinally,
             il.Create(OpCodes.Brfalse, endFinally),
             il.Create(OpCodes.Ldloc, variable),
@@ -188,10 +208,10 @@ public class ModuleWeaver
 
         var handler = new ExceptionHandler(ExceptionHandlerType.Finally)
         {
-            TryStart = usingBlock.Item1,
+            TryStart = tryStart,
             TryEnd = firstPartOfFinally,
             HandlerStart = firstPartOfFinally,
-            HandlerEnd = usingBlock.Item2,
+            HandlerEnd = handlerEnd,
         };
 
         methodBody.ExceptionHandlers.Add(handler);

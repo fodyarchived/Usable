@@ -34,7 +34,7 @@ public class UsableVisitor : ILNodeVisitor
 
             if (starts.Keys.Any(k => k.Item1 == variable && k.Item2 != currentScope))
             {
-                Log.Error("Method {0}: Reassigning a variable in a condition is not supported.", method);
+                Log.Warning("Method {0}: Using cannot be added because reassigning a variable in a condition is not supported.", method);
             }
             else
             {
@@ -67,7 +67,7 @@ public class UsableVisitor : ILNodeVisitor
         if (block.Body.Count == 0)
             return result;
 
-        var toOffset = block.Body.Last().LastILOffset();
+        var toOffset = block.LastILOffset();
 
         foreach (var start in starts.Where(kvp => kvp.Key.Item2 == currentScope + 1).ToList())
         {

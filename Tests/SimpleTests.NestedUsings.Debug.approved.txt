@@ -4,7 +4,7 @@
   .method public hidebysig instance void 
           NestedUsings() cil managed
   {
-    // Code size       74 (0x4a)
+    // Code size       73 (0x49)
     .maxstack  2
     .locals init ([0] class [mscorlib]System.IO.StreamWriter w,
              [1] class [mscorlib]System.IO.StreamWriter w2)
@@ -42,20 +42,19 @@
         IL_0034:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
         IL_0039:  endfinally
       }  // end handler
-      IL_003a:  nop
-      IL_003b:  leave.s    IL_0047
+      IL_003a:  leave.s    IL_0046
     }  // end .try
     finally
     {
-      IL_003d:  ldloc.0
-      IL_003e:  brfalse.s  IL_0046
-      IL_0040:  ldloc.0
-      IL_0041:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
-      IL_0046:  endfinally
+      IL_003c:  ldloc.0
+      IL_003d:  brfalse.s  IL_0045
+      IL_003f:  ldloc.0
+      IL_0040:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_0045:  endfinally
     }  // end handler
+    IL_0046:  nop
     IL_0047:  nop
-    IL_0048:  nop
     .line 33,33 : 5,6 ''
-    IL_0049:  ret
+    IL_0048:  ret
   } // end of method SimpleCases::NestedUsings
 } // end of class SimpleCases

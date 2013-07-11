@@ -1,1 +1,1 @@
-﻿Error[0] = Method System.Void BrokenScenarios::ReassignmentInsideConditional(System.Boolean): Reassigning a variable in a condition is not supported.
+﻿Error is empty

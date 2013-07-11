@@ -17,7 +17,8 @@
 
     <MakeDir Directories="$(OutputPath)" />
     <Copy SourceFiles="@(Nuspec)" DestinationFiles="@(Nuspec->'$(OutputPath)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(Content)" DestinationFiles="@(Content->'$(OutputPath)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(Content)" DestinationFiles="@(Content->'$(OutputPath)Content\%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(Tools)" DestinationFiles="@(Tools->'$(OutputPath)Tools\%(Filename)%(Extension)')" />
 
     <PepitaPackage.WeavingTask NuGetBuildDirectory="$(OutputPath)" MetadataAssembly="@(_ResolvedProjectReferencePaths)" />
 

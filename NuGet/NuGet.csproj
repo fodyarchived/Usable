@@ -13,8 +13,8 @@
     <OutputPath>$(SolutionDir)NuGetBuild</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="install.ps1" />
-    <Content Include="uninstall.ps1" />
+    <Tools Include="install.ps1" />
+    <Tools Include="uninstall.ps1" />
     <NuSpec Include="Usable.nuspec" />
   </ItemGroup>
   <ItemGroup>

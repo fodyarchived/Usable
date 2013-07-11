@@ -36,7 +36,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BrokenScenarios.cs" />
+    <Compile Include="Disposable.cs" />
     <Compile Include="MultipleReturns.cs" />
+    <Compile Include="NotHandled.cs" />
     <Compile Include="SimpleCases.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -71,8 +71,13 @@ public class UsableVisitor : ILNodeVisitor
 
         foreach (var start in starts.Where(kvp => kvp.Key.Item2 == currentScope + 1).ToList())
         {
-            UsingRanges.Add(new ILRange { From = start.Value, To = toOffset });
             starts.Remove(start.Key);
+
+            List<ILExpression> args;
+            if (block.Body.Last().Match(ILCode.Ret, out args) && args.Count == 1 && args[0].MatchLdloc(start.Key.Item1))
+                continue; // Returning the variable
+
+            UsingRanges.Add(new ILRange { From = start.Value, To = toOffset });
         }
 
         return result;

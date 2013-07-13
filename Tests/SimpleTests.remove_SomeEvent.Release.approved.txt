@@ -1,0 +1,36 @@
+﻿.class public auto ansi beforefieldinit SimpleCases
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig specialname instance void 
+          remove_SomeEvent(class [mscorlib]System.EventHandler 'value') cil managed
+  {
+    // Code size       41 (0x29)
+    .maxstack  3
+    .locals init (class [mscorlib]System.EventHandler V_0,
+             class [mscorlib]System.EventHandler V_1,
+             class [mscorlib]System.EventHandler V_2)
+    IL_0000:  ldarg.0
+    IL_0001:  ldfld      class [mscorlib]System.EventHandler SimpleCases::SomeEvent
+    IL_0006:  stloc.0
+    IL_0007:  ldloc.0
+    IL_0008:  stloc.1
+    IL_0009:  ldloc.1
+    IL_000a:  ldarg.1
+    IL_000b:  call       class [mscorlib]System.Delegate [mscorlib]System.Delegate::Remove(class [mscorlib]System.Delegate,
+                                                                                           class [mscorlib]System.Delegate)
+    IL_0010:  castclass  [mscorlib]System.EventHandler
+    IL_0015:  stloc.2
+    IL_0016:  ldarg.0
+    IL_0017:  ldflda     class [mscorlib]System.EventHandler SimpleCases::SomeEvent
+    IL_001c:  ldloc.2
+    IL_001d:  ldloc.1
+    IL_001e:  call       !!0 [mscorlib]System.Threading.Interlocked::CompareExchange<class [mscorlib]System.EventHandler>(!!0&,
+                                                                                                                          !!0,
+                                                                                                                          !!0)
+    IL_0023:  stloc.0
+    IL_0024:  ldloc.0
+    IL_0025:  ldloc.1
+    IL_0026:  bne.un.s   IL_0007
+    IL_0028:  ret
+  } // end of method SimpleCases::remove_SomeEvent
+} // end of class SimpleCases

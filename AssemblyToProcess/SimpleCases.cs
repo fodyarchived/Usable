@@ -50,4 +50,7 @@ public class SimpleCases
         var w = File.CreateText("log.txt");
         throw new System.NotImplementedException();
     }
+
+    // This adds methods
+    public event System.EventHandler SomeEvent;
 }

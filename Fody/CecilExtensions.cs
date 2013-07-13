@@ -62,6 +62,7 @@ public static class CecilExtensions
     {
         return node.GetSelfAndChildrenRecursive<ILExpression>()
             .SelectMany(exp => exp.ILRanges)
+            .DefaultIfEmpty(new ILRange { To = -1 })
             .Max(ilr => ilr.To);
     }
 

@@ -30,22 +30,25 @@ public class UsableVisitor : ILNodeVisitor
         {
             var variable = (ILVariable)expression.Operand;
 
-            var key = Tuple.Create(variable, currentScope);
+            if (variable.Type.Resolve().HasInterface("System.IDisposable"))
+            {
+                var key = Tuple.Create(variable, currentScope);
 
-            if (starts.Keys.Any(k => k.Item1 == variable && k.Item2 != currentScope))
-            {
-                Log.Warning("Method {0}: Using cannot be added because reassigning a variable in a condition is not supported.", method);
-            }
-            else
-            {
-                if (starts.ContainsKey(key))
+                if (starts.Keys.Any(k => k.Item1 == variable && k.Item2 != currentScope))
                 {
-                    UsingRanges.Add(new ILRange { From = starts[key], To = expression.FirstILOffset() });
-                    starts.Remove(key);
+                    Log.Warning("Method {0}: Using cannot be added because reassigning a variable in a condition is not supported.", method);
                 }
+                else
+                {
+                    if (starts.ContainsKey(key))
+                    {
+                        UsingRanges.Add(new ILRange { From = starts[key], To = expression.FirstILOffset() });
+                        starts.Remove(key);
+                    }
 
-                if (!currentTrys.Contains(expression.LastILOffset()))
-                    starts.Add(key, expression.LastILOffset());
+                    if (!currentTrys.Contains(expression.LastILOffset()))
+                        starts.Add(key, expression.LastILOffset());
+                }
             }
         }
         if (expression.Code == ILCode.Ret && currentScope > 1)
@@ -68,6 +71,9 @@ public class UsableVisitor : ILNodeVisitor
             return result;
 
         var toOffset = block.LastILOffset();
+
+        if (toOffset < 0)
+            return result;
 
         foreach (var start in starts.Where(kvp => kvp.Key.Item2 == currentScope + 1).ToList())
         {

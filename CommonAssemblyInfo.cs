@@ -2,5 +2,5 @@
 
 [assembly: AssemblyTitle("Usable")]
 [assembly: AssemblyProduct("Usable")]
-[assembly: AssemblyVersion("0.2.0")]
-[assembly: AssemblyFileVersion("0.2.0")]
+[assembly: AssemblyVersion("0.2.1")]
+[assembly: AssemblyFileVersion("0.2.1")]

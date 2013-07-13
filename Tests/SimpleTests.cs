@@ -46,6 +46,18 @@ public class SimpleTests
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::MultipleUsings"));
     }
 
+    [Test]
+    public void add_SomeEvent()
+    {
+        Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::add_SomeEvent"));
+    }
+
+    [Test]
+    public void remove_SomeEvent()
+    {
+        Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::remove_SomeEvent"));
+    }
+
 #if DEBUG
 
     [Test]

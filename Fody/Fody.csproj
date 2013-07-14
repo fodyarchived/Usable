@@ -35,10 +35,6 @@
       <HintPath>..\packages\Anotar.Custom.Fody.2.0.4.0\Lib\portable-net4+sl4+wp7\Anotar.Custom.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ICSharpCode.Decompiler">
-      <HintPath>ICSharpCode.Decompiler.dll</HintPath>
-      <IlMerge>True</IlMerge>
-    </Reference>
     <Reference Include="ICSharpCode.NRefactory">
       <HintPath>..\packages\ICSharpCode.NRefactory.5.3.0\lib\Net40\ICSharpCode.NRefactory.dll</HintPath>
       <IlMerge>True</IlMerge>
@@ -76,6 +72,59 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CecilExtensions.cs" />
+    <Compile Include="Decompiler\Ast\Annotations.cs" />
+    <Compile Include="Decompiler\Ast\AstBuilder.cs" />
+    <Compile Include="Decompiler\Ast\AstMethodBodyBuilder.cs" />
+    <Compile Include="Decompiler\Ast\CommentStatement.cs" />
+    <Compile Include="Decompiler\Ast\DecompilerContext.cs" />
+    <Compile Include="Decompiler\Ast\NameVariables.cs" />
+    <Compile Include="Decompiler\Ast\NRefactoryExtensions.cs" />
+    <Compile Include="Decompiler\Ast\TextOutputFormatter.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\AddCheckedBlocks.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\CombineQueryExpressions.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\ContextTrackingVisitor.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\ConvertConstructorCallIntoInitializer.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\CustomPatterns.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\DecimalConstantTransform.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\DeclareVariables.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\DelegateConstruction.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\ExpressionTreeConverter.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\FlattenSwitchBlocks.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\IntroduceExtensionMethods.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\IntroduceQueryExpressions.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\IntroduceUnsafeModifier.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\IntroduceUsingDeclarations.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\PatternStatementTransform.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\PushNegation.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\ReplaceMethodCallsWithOperators.cs" />
+    <Compile Include="Decompiler\Ast\Transforms\TransformationPipeline.cs" />
+    <Compile Include="Decompiler\Ast\TypesHierarchyHelpers.cs" />
+    <Compile Include="Decompiler\CecilExtensions.cs" />
+    <Compile Include="Decompiler\CodeMappings.cs" />
+    <Compile Include="Decompiler\DecompilerException.cs" />
+    <Compile Include="Decompiler\DecompilerSettings.cs" />
+    <Compile Include="Decompiler\Disassembler\DisassemblerHelpers.cs" />
+    <Compile Include="Decompiler\Disassembler\ILStructure.cs" />
+    <Compile Include="Decompiler\Disassembler\MethodBodyDisassembler.cs" />
+    <Compile Include="Decompiler\Disassembler\ReflectionDisassembler.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\ControlFlowEdge.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\ControlFlowGraph.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\ControlFlowGraphBuilder.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\ControlFlowNode.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\ControlStructureDetector.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\OpCodeInfo.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\SimplifyByRefCalls.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\SsaBlock.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\SsaForm.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\SsaFormBuilder.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\SsaInstruction.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\SsaOptimization.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\SsaVariable.cs" />
+    <Compile Include="Decompiler\FlowAnalysis\TransformToSsa.cs" />
+    <Compile Include="Decompiler\ITextOutput.cs" />
+    <Compile Include="Decompiler\PlainTextOutput.cs" />
+    <Compile Include="Decompiler\ReferenceResolvingException.cs" />
+    <Compile Include="Decompiler\TextOutputWriter.cs" />
     <Compile Include="ExceptionHandlerComparer.cs" />
     <Compile Include="ILNodeVisitor.cs">
       <AutoGen>True</AutoGen>
@@ -85,6 +134,24 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="ModuleWeaver.cs" />
+    <Compile Include="Decompiler\ILAst\AsyncDecompiler.cs" />
+    <Compile Include="Decompiler\ILAst\DefaultDictionary.cs" />
+    <Compile Include="Decompiler\ILAst\GotoRemoval.cs" />
+    <Compile Include="Decompiler\ILAst\ILAstBuilder.cs" />
+    <Compile Include="Decompiler\ILAst\ILAstOptimizer.cs" />
+    <Compile Include="Decompiler\ILAst\ILAstTypes.cs" />
+    <Compile Include="Decompiler\ILAst\ILCodes.cs" />
+    <Compile Include="Decompiler\ILAst\ILInlining.cs" />
+    <Compile Include="Decompiler\ILAst\InitializerPeepholeTransforms.cs" />
+    <Compile Include="Decompiler\ILAst\LiftedOperators.cs" />
+    <Compile Include="Decompiler\ILAst\LoopsAndConditions.cs" />
+    <Compile Include="Decompiler\ILAst\PatternMatching.cs" />
+    <Compile Include="Decompiler\ILAst\PeepholeTransform.cs" />
+    <Compile Include="Decompiler\ILAst\SimpleControlFlow.cs" />
+    <Compile Include="Decompiler\ILAst\StateRange.cs" />
+    <Compile Include="Decompiler\ILAst\SymbolicExecution.cs" />
+    <Compile Include="Decompiler\ILAst\TypeAnalysis.cs" />
+    <Compile Include="Decompiler\ILAst\YieldReturnDecompiler.cs" />
     <Compile Include="UsableVisitor.cs" />
   </ItemGroup>
   <ItemGroup>

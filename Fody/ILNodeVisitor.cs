@@ -1,5 +1,5 @@
 ﻿using System;
-using ICSharpCode.Decompiler.ILAst;
+using Custom.Decompiler.ILAst;
 
 public abstract class ILNodeVisitor
 {

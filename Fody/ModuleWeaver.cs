@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Anotar.Custom;
-using ICSharpCode.Decompiler;
-using ICSharpCode.Decompiler.ILAst;
+using Custom.Decompiler;
+using Custom.Decompiler.ILAst;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;

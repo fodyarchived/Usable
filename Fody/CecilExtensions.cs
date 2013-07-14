@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ICSharpCode.Decompiler.ILAst;
+using Custom.Decompiler.ILAst;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
@@ -51,17 +51,22 @@ public static class CecilExtensions
         return instructions.Last(i => i.Offset < offset);
     }
 
+    public static IEnumerable<ILRange> GetILRanges(this ILExpression expression)
+    {
+        return expression.ILRanges.Concat(expression.Original.SelectMany(exp => GetILRanges(exp)));
+    }
+
     public static int FirstILOffset(this ILNode node)
     {
         return node.GetSelfAndChildrenRecursive<ILExpression>()
-            .SelectMany(exp => exp.ILRanges)
+            .SelectMany(exp => exp.GetILRanges())
             .Min(ilr => ilr.From);
     }
 
     public static int LastILOffset(this ILNode node)
     {
         return node.GetSelfAndChildrenRecursive<ILExpression>()
-            .SelectMany(exp => exp.ILRanges)
+            .SelectMany(exp => exp.GetILRanges())
             .DefaultIfEmpty(new ILRange { To = -1 })
             .Max(ilr => ilr.To);
     }

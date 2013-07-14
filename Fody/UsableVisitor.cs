@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Anotar.Custom;
-using ICSharpCode.Decompiler.ILAst;
+using Custom.Decompiler.ILAst;
 using Mono.Cecil;
 
 public class UsableVisitor : ILNodeVisitor

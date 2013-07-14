@@ -26,4 +26,17 @@ public class MultipleReturns
 
         w.WriteLine("I'm a lumberjack an' I'm ok.");
     }
+
+    public bool NestedEarlyReturn(bool check)
+    {
+        if (check == false)
+        {
+            if (check == false)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

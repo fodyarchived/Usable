@@ -53,7 +53,7 @@ public class UsableVisitor : ILNodeVisitor
         }
         if (expression.Code == ILCode.Ret && currentScope > 1)
         {
-            EarlyReturns.Add(expression.ILRanges.First().From);
+            EarlyReturns.Add(expression.FirstILOffset());
         }
 
         return base.VisitExpression(expression);

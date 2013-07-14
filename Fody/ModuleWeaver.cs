@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Anotar.Custom;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.ILAst;
 using Mono.Cecil;
@@ -42,14 +43,41 @@ public class ModuleWeaver
     private void ProcessType(TypeDefinition type)
     {
         foreach (var method in type.MethodsWithBody())
-            ProcessBody(method);
+        {
+            try
+            {
+                ProcessBody(method);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error processing method '{0}'", method);
+            }
+        }
 
         foreach (var property in type.ConcreteProperties())
         {
             if (property.GetMethod != null)
-                ProcessBody(property.GetMethod);
+            {
+                try
+                {
+                    ProcessBody(property.GetMethod);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error processing property getter '{0}'", property);
+                }
+            }
             if (property.SetMethod != null)
-                ProcessBody(property.SetMethod);
+            {
+                try
+                {
+                    ProcessBody(property.SetMethod);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error processing property setter '{0}'", property);
+                }
+            }
         }
     }
 

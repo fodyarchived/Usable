@@ -10,23 +10,12 @@ public static class LoggerFactory
 
     public static Logger GetLogger<T>()
     {
-        return new Logger(LogInfo, LogWarn, LogError);
+        return new Logger();
     }
 }
 
 public class Logger
 {
-    private readonly Action<string> logInfo;
-    private readonly Action<string> logWarn;
-    private readonly Action<string> logError;
-
-    public Logger(Action<string> logInfo, Action<string> logWarn, Action<string> logError)
-    {
-        this.logInfo = logInfo;
-        this.logWarn = logWarn;
-        this.logError = logError;
-    }
-
     public void Debug(string format, params object[] args)
     {
         throw new NotSupportedException();
@@ -41,39 +30,39 @@ public class Logger
 
     public void Information(string format, params object[] args)
     {
-        logInfo(string.Format(format, args));
+        LoggerFactory.LogInfo(string.Format(format, args));
     }
 
     public void Information(Exception exception, string format, params object[] args)
     {
-        logInfo(string.Format(format, args) + Environment.NewLine + exception);
+        LoggerFactory.LogInfo(string.Format(format, args) + Environment.NewLine + exception);
     }
 
-    public bool IsInformationEnabled { get { return logInfo != null; } }
+    public bool IsInformationEnabled { get { return LoggerFactory.LogInfo != null; } }
 
     public void Warning(string format, params object[] args)
     {
-        logWarn(string.Format(format, args));
+        LoggerFactory.LogWarn(string.Format(format, args));
     }
 
     public void Warning(Exception exception, string format, params object[] args)
     {
-        logWarn(string.Format(format, args) + Environment.NewLine + exception);
+        LoggerFactory.LogWarn(string.Format(format, args) + Environment.NewLine + exception);
     }
 
-    public bool IsWarningEnabled { get { return logWarn != null; } }
+    public bool IsWarningEnabled { get { return LoggerFactory.LogWarn != null; } }
 
     public void Error(string format, params object[] args)
     {
-        logError(string.Format(format, args));
+        LoggerFactory.LogError(string.Format(format, args));
     }
 
     public void Error(Exception exception, string format, params object[] args)
     {
-        logError(string.Format(format, args) + Environment.NewLine + exception);
+        LoggerFactory.LogError(string.Format(format, args) + Environment.NewLine + exception);
     }
 
-    public bool IsErrorEnabled { get { return logError != null; } }
+    public bool IsErrorEnabled { get { return LoggerFactory.LogError != null; } }
 
     public void Fatal(string format, params object[] args)
     {

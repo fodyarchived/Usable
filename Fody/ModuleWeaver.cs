@@ -55,7 +55,7 @@ public class ModuleWeaver
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error processing method '{0}'", method);
+                LogTo.Error(ex, "Error processing method '{0}'", method);
             }
         }
 
@@ -69,7 +69,7 @@ public class ModuleWeaver
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Error processing property getter '{0}'", property);
+                    LogTo.Error(ex, "Error processing property getter '{0}'", property);
                 }
             }
             if (property.SetMethod != null)
@@ -80,7 +80,7 @@ public class ModuleWeaver
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex, "Error processing property setter '{0}'", property);
+                    LogTo.Error(ex, "Error processing property setter '{0}'", property);
                 }
             }
         }
@@ -90,7 +90,7 @@ public class ModuleWeaver
     {
         if (method.IsAsyncStateMachine())
         {
-            Log.Warning("Async method '{0}' cannot be modified by Usable.", method.FullName);
+            LogTo.Warning("Async method '{0}' cannot be modified by Usable.", method.FullName);
             return;
         }
 

@@ -36,7 +36,7 @@ public class UsableVisitor : ILNodeVisitor
 
                 if (starts.Keys.Any(k => k.Item1 == variable && k.Item2 != currentScope))
                 {
-                    Log.Warning("Method {0}: Using cannot be added because reassigning a variable in a condition is not supported.", method);
+                    LogTo.Warning("Method {0}: Using cannot be added because reassigning a variable in a condition is not supported.", method);
                 }
                 else
                 {

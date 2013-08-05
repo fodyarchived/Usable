@@ -90,7 +90,7 @@ public class ModuleWeaver
     {
         if (method.IsAsyncStateMachine())
         {
-            LogTo.Warning("Async method '{0}' cannot be modified by Usable.", method.FullName);
+            LogTo.Information("Async method '{0}' cannot be modified by Usable.", method.FullName);
             return;
         }
 

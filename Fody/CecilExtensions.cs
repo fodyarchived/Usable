@@ -20,7 +20,7 @@ public static class CecilExtensions
 
     public static bool HasInterface(this TypeDefinition type, string interfaceFullName)
     {
-        return (type.Interfaces.Any(i => i.FullName.Equals(interfaceFullName))
+        return (type != null && type.Interfaces != null && type.Interfaces.Any(i => i.FullName != null && i.FullName.Equals(interfaceFullName))
                 || (type.BaseType != null && type.BaseType.Resolve().HasInterface(interfaceFullName)));
     }
 

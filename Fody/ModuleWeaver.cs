@@ -42,6 +42,11 @@ public class ModuleWeaver
 
     private void ProcessType(TypeDefinition type)
     {
+        if (type.IsCompilerGenerated() && type.IsIAsyncStateMachine())
+        {
+            return;
+        }
+
         foreach (var method in type.MethodsWithBody())
         {
             try
@@ -83,6 +88,12 @@ public class ModuleWeaver
 
     private void ProcessBody(MethodDefinition method)
     {
+        if (method.IsAsyncStateMachine())
+        {
+            Log.Warning("Async method '{0}' cannot be modified by Usable.", method.FullName);
+            return;
+        }
+
         method.Body.SimplifyMacros();
 
         var ilProcessor = method.Body.GetILProcessor();

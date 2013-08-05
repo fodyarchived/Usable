@@ -78,4 +78,14 @@ public static class CecilExtensions
         foreach (var item in items)
             collection.Add(item);
     }
+
+    public static bool IsAsyncStateMachine(this ICustomAttributeProvider value)
+    {
+        return value.CustomAttributes.Any(a => a.AttributeType.Name == "AsyncStateMachineAttribute");
+    }
+
+    public static bool IsIAsyncStateMachine(this TypeDefinition typeDefinition)
+    {
+        return typeDefinition.Interfaces.Any(x => x.Name == "IAsyncStateMachine");
+    }
 }

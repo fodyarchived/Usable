@@ -1,30 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{192D554C-8FC1-4BBA-8A3F-E4C17349E855}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>$(SolutionDir)NuGetBuild</OutputPath>
+    <ConfigurationName>Debug</ConfigurationName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>$(SolutionDir)NuGetBuild</OutputPath>
+    <ConfigurationName>Release</ConfigurationName>
   </PropertyGroup>
   <ItemGroup>
-    <Tools Include="install.ps1" />
-    <Tools Include="uninstall.ps1" />
-    <NuSpec Include="Usable.nuspec" />
+    <None Include="FodyWeavers.xml.install.xdt" />
+    <None Include="FodyWeavers.xml.uninstall.xdt" />
+    <None Include="Usable.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Fody_ToBeDeleted.txt" />
-  </ItemGroup>
+  <Target Name="Clean">
+    <ItemGroup>
+      <FilesToDelete Include="$(SolutionDir)NuGetBuild\**\*.*" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+  <Target Name="Build" DependsOnTargets="NuGetBuild" />
+  <Target Name="ReBuild" DependsOnTargets="NuGetBuild" />
+  <UsingTask TaskName="PepitaPackage.WeavingTask" AssemblyFile="$(SolutionDir)Tools\Pepita\PepitaPackage.dll" />
+  <Target Name="NuGetBuild" DependsOnTargets="Clean">
+    <MakeDir Directories="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(ProjectDir)Usable.nuspec" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(ProjectDir)FodyWeavers.xml.install.xdt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
+    <Copy SourceFiles="$(ProjectDir)FodyWeavers.xml.uninstall.xdt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
+    <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\Usable.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\Usable.Fody.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
+    <PepitaPackage.WeavingTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(SolutionDir)Fody\bin\$(ConfigurationName)\Usable.Fody.dll" />
+  </Target>
   <ItemGroup>
     <ProjectReference Include="..\Fody\Fody.csproj">
-      <Project>{a9529331-4a1b-4ff4-b8c4-9603ae3c262d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <Name>Fody</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(SolutionDir)\tools\NuGetBuild.targets" />
 </Project>

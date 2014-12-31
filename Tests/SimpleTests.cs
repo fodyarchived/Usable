@@ -1,4 +1,5 @@
-﻿using ApprovalTests;
+﻿using System.Runtime.CompilerServices;
+using ApprovalTests;
 using ApprovalTests.Reporters;
 using NUnit.Framework;
 
@@ -17,57 +18,66 @@ public class SimpleTests
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void SingleDisposable()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::SingleDisposable"));
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void AlreadyUsing()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::AlreadyUsing"));
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void VariableReuse()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::VariableReuse"));
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void NestedUsings()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::NestedUsings"));
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void MultipleUsings()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::MultipleUsings"));
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void add_SomeEvent()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::add_SomeEvent"));
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void remove_SomeEvent()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::remove_SomeEvent"));
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void Issue8()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::Issue8"));
     }
 
     [Test]
-    public void Issue8WithDisposable()
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public void GenericDisposable()
     {
-        Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::Issue8WithDisposable"));
+        Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::GenericDisposable"));
     }
 
 #if DEBUG

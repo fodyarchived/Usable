@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 public class SimpleCases
 {
@@ -58,10 +57,18 @@ public class SimpleCases
     public void Issue8<T>()
     {
         var t = default(T);
+        System.Console.WriteLine(t); // use t so it's not optimized out
     }
 
-    public void Issue8WithDisposable<T>() where T : IDisposable, new()
+    public void GenericDisposable<T>() where T : StreamWriter
     {
-        var t = new T();
+        var w = (T)File.CreateText("log.txt");
+        w.WriteLine("I'm a lumberjack an' I'm ok.");
+    }
+
+    public void TemplateGenericDisposable<T>() where T : StreamWriter
+    {
+        using (var w = (T)File.CreateText("log.txt"))
+            w.WriteLine("I'm a lumberjack an' I'm ok.");
     }
 }

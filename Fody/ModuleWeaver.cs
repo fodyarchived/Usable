@@ -201,7 +201,7 @@ public class ModuleWeaver
             stloc = stloc.Previous;
         var variable = (VariableDefinition)stloc.Operand;
 
-        if (!variable.VariableType.Resolve().HasInterface("System.IDisposable"))
+        if (!variable.VariableType.HasInterface("System.IDisposable"))
             return;
 
         var il = methodBody.GetILProcessor();
@@ -237,13 +237,28 @@ public class ModuleWeaver
         var firstPartOfFinally = il.Create(OpCodes.Ldloc, variable);
         var endFinally = il.Create(OpCodes.Endfinally);
 
-        il.InsertAfter(leave,
-            firstPartOfFinally,
-            il.Create(OpCodes.Brfalse, endFinally),
-            il.Create(OpCodes.Ldloc, variable),
-            disposeCall,
-            endFinally
-        );
+        if (variable.VariableType.IsGenericParameter)
+        {
+            il.InsertAfter(leave,
+                firstPartOfFinally,
+                il.Create(OpCodes.Box, variable.VariableType),
+                il.Create(OpCodes.Brfalse, endFinally),
+                il.Create(OpCodes.Ldloca, variable),
+                il.Create(OpCodes.Constrained, variable.VariableType),
+                disposeCall,
+                endFinally
+            );
+        }
+        else
+        {
+            il.InsertAfter(leave,
+                firstPartOfFinally,
+                il.Create(OpCodes.Brfalse, endFinally),
+                il.Create(OpCodes.Ldloc, variable),
+                disposeCall,
+                endFinally
+            );
+        }
 
         var handler = new ExceptionHandler(ExceptionHandlerType.Finally)
         {

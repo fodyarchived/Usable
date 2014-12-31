@@ -1,0 +1,21 @@
+﻿.class public auto ansi beforefieldinit SimpleCases
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig instance void 
+          Issue8<T>() cil managed
+  {
+    // Code size       20 (0x14)
+    .maxstack  1
+    .locals init ([0] !!T t)
+    .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
+    .line 59,59 : 9,28 'AssemblyToProcess\\SimpleCases.cs'
+    IL_0000:  ldloca.s   t
+    IL_0002:  initobj    !!T
+    .line 60,60 : 9,37 ''
+    IL_0008:  ldloc.0
+    IL_0009:  box        !!T
+    IL_000e:  call       void [mscorlib]System.Console::WriteLine(object)
+    .line 61,61 : 5,6 ''
+    IL_0013:  ret
+  } // end of method SimpleCases::Issue8
+} // end of class SimpleCases

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using ApprovalTests;
 using ApprovalTests.Reporters;
 using NUnit.Framework;
@@ -17,12 +18,14 @@ public class MultipleReturns
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void Conditional()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "MultipleReturns::Conditional"));
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void EarlyReturn()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "MultipleReturns::EarlyReturn"));

@@ -1,0 +1,42 @@
+﻿.class public auto ansi beforefieldinit SimpleCases
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig instance void 
+          GenericDisposable<([mscorlib]System.IO.StreamWriter) T>() cil managed
+  {
+    // Code size       62 (0x3e)
+    .maxstack  2
+    .locals init ([0] !!T w)
+    .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
+    .line 64,64 : 5,6 'AssemblyToProcess\\SimpleCases.cs'
+    IL_0000:  nop
+    .line 65,65 : 9,47 ''
+    IL_0001:  ldstr      "log.txt"
+    IL_0006:  call       class [mscorlib]System.IO.StreamWriter [mscorlib]System.IO.File::CreateText(string)
+    IL_000b:  unbox.any  !!T
+    IL_0010:  stloc.0
+    .line 66,66 : 9,53 ''
+    .try
+    {
+      IL_0011:  ldloca.s   w
+      IL_0013:  ldstr      "I'm a lumberjack an' I'm ok."
+      IL_0018:  constrained. !!T
+      IL_001e:  callvirt   instance void [mscorlib]System.IO.TextWriter::WriteLine(string)
+      IL_0023:  leave.s    IL_003b
+    }  // end .try
+    finally
+    {
+      IL_0025:  ldloc.0
+      IL_0026:  box        !!T
+      IL_002b:  brfalse.s  IL_003a
+      IL_002d:  ldloca.s   w
+      IL_002f:  constrained. !!T
+      IL_0035:  callvirt   instance void [mscorlib]System.IDisposable::Dispose()
+      IL_003a:  endfinally
+    }  // end handler
+    IL_003b:  nop
+    IL_003c:  nop
+    .line 67,67 : 5,6 ''
+    IL_003d:  ret
+  } // end of method SimpleCases::GenericDisposable
+} // end of class SimpleCases

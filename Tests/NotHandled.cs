@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using ApprovalTests;
 using ApprovalTests.Reporters;
 using NUnit.Framework;
@@ -17,6 +18,7 @@ public class NotHandled
     }
 
     [Test]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public void ReturnLocalDisposable()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "NotHandled::ReturnLocalDisposable"));

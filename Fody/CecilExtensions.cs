@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Custom.Decompiler.ILAst;
 using Mono.Cecil;
@@ -18,10 +17,24 @@ public static class CecilExtensions
         return type.Properties.Where(x => (x.GetMethod == null || !x.GetMethod.IsAbstract) && (x.SetMethod == null || !x.SetMethod.IsAbstract));
     }
 
-    public static bool HasInterface(this TypeDefinition type, string interfaceFullName)
+    public static bool HasInterface(this TypeReference type, string interfaceFullName)
     {
-        return (type != null && type.Interfaces != null && type.Interfaces.Any(i => i.FullName != null && i.FullName.Equals(interfaceFullName))
-                || (type.BaseType != null && type.BaseType.Resolve().HasInterface(interfaceFullName)));
+        if (type == null)
+            return false;
+
+        if (type.IsGenericParameter)
+        {
+            var genericType = (GenericParameter)type;
+            return genericType.Constraints.Any(t => t.HasInterface(interfaceFullName));
+        }
+
+        var resolved = type.Resolve();
+
+        if (resolved == null)
+            return false;
+
+        return (resolved.Interfaces != null && resolved.Interfaces.Any(i => i.FullName != null && i.FullName.Equals(interfaceFullName)))
+                || resolved.BaseType.HasInterface(interfaceFullName);
     }
 
     public static void InsertBefore(this ILProcessor processor, Instruction target, params Instruction[] instructions)

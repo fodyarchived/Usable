@@ -30,7 +30,7 @@ public class UsableVisitor : ILNodeVisitor
         {
             var variable = (ILVariable)expression.Operand;
 
-            if (variable.Type.Resolve().HasInterface("System.IDisposable"))
+            if (variable.Type.HasInterface("System.IDisposable"))
             {
                 var key = Tuple.Create(variable, currentScope);
 

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 public class SimpleCases
 {
@@ -53,4 +54,14 @@ public class SimpleCases
 
     // This adds methods
     public event System.EventHandler SomeEvent;
+
+    public void Issue8<T>()
+    {
+        var t = default(T);
+    }
+
+    public void Issue8WithDisposable<T>() where T : IDisposable, new()
+    {
+        var t = new T();
+    }
 }

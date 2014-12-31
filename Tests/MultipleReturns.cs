@@ -10,9 +10,9 @@ public class MultipleReturns
     public void SetApprovalConfig()
     {
 #if DEBUG
-        ApprovalTests.Namers.NamerFactory.AsMachineSpecificTest(() => "Debug");
+        ApprovalTests.Namers.NamerFactory.AsEnvironmentSpecificTest(() => "Debug");
 #else
-        ApprovalTests.Namers.NamerFactory.AsMachineSpecificTest(() => "Release");
+        ApprovalTests.Namers.NamerFactory.AsEnvironmentSpecificTest(() => "Release");
 #endif
     }
 

@@ -10,9 +10,9 @@ public class SimpleTests
     public void SetApprovalConfig()
     {
 #if DEBUG
-        ApprovalTests.Namers.NamerFactory.AsMachineSpecificTest(() => "Debug");
+        ApprovalTests.Namers.NamerFactory.AsEnvironmentSpecificTest(() => "Debug");
 #else
-        ApprovalTests.Namers.NamerFactory.AsMachineSpecificTest(() => "Release");
+        ApprovalTests.Namers.NamerFactory.AsEnvironmentSpecificTest(() => "Release");
 #endif
     }
 
@@ -56,6 +56,18 @@ public class SimpleTests
     public void remove_SomeEvent()
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::remove_SomeEvent"));
+    }
+
+    [Test]
+    public void Issue8()
+    {
+        Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::Issue8"));
+    }
+
+    [Test]
+    public void Issue8WithDisposable()
+    {
+        Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "SimpleCases::Issue8WithDisposable"));
     }
 
 #if DEBUG

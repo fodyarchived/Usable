@@ -4,12 +4,10 @@
 
 Usable adds using statements for local variables that have been created, and implement [IDisposable](http://msdn.microsoft.com/en-au/library/system.idisposable.aspx).
 
-### Nuget 
+## The nuget package  [![NuGet Status](http://img.shields.io/nuget/v/Usable.Fody.svg?style=flat)](https://www.nuget.org/packages/Usable.Fody/)
 
-Nuget package http://nuget.org/packages/Usable.Fody 
+https://nuget.org/packages/Usable.Fody/
 
-To Install from the Nuget Package Manager Console 
-    
     PM> Install-Package Usable.Fody
 
 ### Your Code

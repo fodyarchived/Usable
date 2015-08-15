@@ -206,7 +206,7 @@ public class ModuleWeaver
 
         var il = methodBody.GetILProcessor();
 
-        var disposeCall = il.Create(OpCodes.Callvirt, ModuleDefinition.Import(typeof(IDisposable).GetMethod("Dispose")));
+        var disposeCall = il.Create(OpCodes.Callvirt, ModuleDefinition.ImportReference(typeof(IDisposable).GetMethod("Dispose")));
 
         methodBody.OptimizeMacros();
         methodBody.SimplifyMacros();

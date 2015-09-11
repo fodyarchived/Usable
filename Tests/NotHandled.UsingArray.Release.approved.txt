@@ -1,0 +1,17 @@
+﻿.class public auto ansi beforefieldinit NotHandled
+       extends [mscorlib]System.Object
+{
+  .method public hidebysig instance void 
+          UsingArray() cil managed
+  {
+    // Code size       8 (0x8)
+    .maxstack  8
+    .language '{3F5162F8-07C6-11D3-9053-00C04FA302A1}', '{994B45C4-E6E9-11D2-903F-00C04FA302A1}', '{5A869D0B-6611-11D3-BD2A-0000F80849BD}'
+    .line 12,12 : 9,37 'AssemblyToProcess\\NotHandled.cs'
+    IL_0000:  ldc.i4.0
+    IL_0001:  newarr     Disposable
+    IL_0006:  pop
+    .line 13,13 : 5,6 ''
+    IL_0007:  ret
+  } // end of method NotHandled::UsingArray
+} // end of class NotHandled

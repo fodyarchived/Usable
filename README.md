@@ -31,6 +31,7 @@ https://nuget.org/packages/Usable.Fody/
 ## Contributors
 
   * [Cameron MacFarland](https://github.com/distantcam)
+  * [Jason Woods](https://github.com/jasonwoods-7)
 
 ### Icon
 

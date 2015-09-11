@@ -8,4 +8,9 @@ public class NotHandled
         instance.DoSomething();
         return instance;
     }
+
+    public void UsingArray()
+    {
+        var a = new Disposable[] {};
+    }
 }

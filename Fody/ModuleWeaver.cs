@@ -201,7 +201,7 @@ public class ModuleWeaver
             stloc = stloc.Previous;
         var variable = (VariableDefinition)stloc.Operand;
 
-        if (!variable.VariableType.HasInterface("System.IDisposable"))
+        if (!variable.VariableType.HasInterface("System.IDisposable") || variable.VariableType.IsArray)
             return;
 
         var il = methodBody.GetILProcessor();

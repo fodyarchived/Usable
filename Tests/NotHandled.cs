@@ -23,4 +23,10 @@ public class NotHandled
     {
         Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "NotHandled::ReturnLocalDisposable"));
     }
+
+    [Test]
+    public void UsingArray()
+    {
+        Approvals.Verify(Decompiler.Decompile(AssemblyWeaver.AfterAssemblyPath, "NotHandled::UsingArray"));
+    }
 }

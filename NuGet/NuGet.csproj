@@ -14,7 +14,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="dotnet.targets" />
     <None Include="install.ps" />
     <None Include="packages.config" />
     <None Include="uninstall.ps" />
@@ -36,7 +35,6 @@
     <Copy SourceFiles="$(ProjectDir)Fody_ToBeDeleted.txt" DestinationFolder="$(SolutionDir)NuGetBuild\Content" />
     <Copy SourceFiles="$(ProjectDir)install.ps" DestinationFiles="$(SolutionDir)NuGetBuild\Tools\install.ps1" />
     <Copy SourceFiles="$(ProjectDir)uninstall.ps" DestinationFiles="$(SolutionDir)NuGetBuild\Tools\uninstall.ps1" />
-    <Copy SourceFiles="$(ProjectDir)dotnet.targets" DestinationFiles="$(SolutionDir)NuGetBuild\build\dotnet\Usable.Fody.targets" />
     <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\Usable.Fody.dll" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <Copy SourceFiles="$(SolutionDir)Fody\bin\$(ConfigurationName)\Usable.Fody.pdb" DestinationFolder="$(SolutionDir)NuGetBuild" />
     <PepitaPackage.CreatePackageTask NuGetBuildDirectory="$(SolutionDir)NuGetBuild" MetadataAssembly="$(SolutionDir)Fody\bin\$(ConfigurationName)\Usable.Fody.dll" />

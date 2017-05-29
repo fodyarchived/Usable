@@ -4,6 +4,8 @@
 
 Usable adds using statements for local variables that have been created, and implement [IDisposable](http://msdn.microsoft.com/en-au/library/system.idisposable.aspx).
 
+[![NuGet Status](https://img.shields.io/gitter/room/fody/fody.svg?style=flat)](https://gitter.im/Fody/Fody)
+
 ## The nuget package  [![NuGet Status](http://img.shields.io/nuget/v/Usable.Fody.svg?style=flat)](https://www.nuget.org/packages/Usable.Fody/)
 
 https://nuget.org/packages/Usable.Fody/

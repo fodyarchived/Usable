@@ -9,31 +9,40 @@
 Usable adds using statements for local variables that have been created, and implement [IDisposable](http://msdn.microsoft.com/en-au/library/system.idisposable.aspx).
 
 
-## The nuget package
+## NuGet installation
 
-https://nuget.org/packages/Usable.Fody/
+Install the [Usable.Fody NuGet package](https://nuget.org/packages/Usable.Fody/) and update the [Fody NuGet package](https://nuget.org/packages/Fody/):
 
-    PM> Install-Package Usable.Fody
+```powershell
+PM> Install-Package Fody
+PM> Install-Package Usable.Fody
+```
+
+The `Install-Package Fody` is required since NuGet always defaults to the oldest, and most buggy, version of any dependency.
 
 
 ### Your Code
 
-    public void Method()
-    {
-        var w = File.CreateText("log.txt");
-        w.WriteLine("I'm a lumberjack an' I'm ok.");
-    }
+```csharp
+public void Method()
+{
+    var w = File.CreateText("log.txt");
+    w.WriteLine("I'm a lumberjack an' I'm ok.");
+}
+```
 
 
 ### What gets compiled
 
-    public void Method()
+```csharp
+public void Method()
+{
+    using (var w = File.CreateText("log.txt"))
     {
-        using (var w = File.CreateText("log.txt"))
-        {
-            w.WriteLine("I'm a lumberjack an' I'm ok.");
-        }
+        w.WriteLine("I'm a lumberjack an' I'm ok.");
     }
+}
+```
 
 
 ## Contributors

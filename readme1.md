@@ -2,7 +2,7 @@
 [![NuGet Status](http://img.shields.io/nuget/v/Usable.Fody.svg?style=flat)](https://www.nuget.org/packages/Usable.Fody/)
 
 
-## Usable is an add-in for [Fody](https://github.com/Fody/Fody/) 
+## Usable is an add-in for [Fody](https://github.com/Fody/Home/)
 
 ![Usable Icon - A waste paper basket.](https://raw.github.com/Fody/Usable/master/Icons/package_icon.png)
 
